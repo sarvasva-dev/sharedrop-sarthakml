@@ -53,7 +53,7 @@ function createAppServer(customConfig = {}) {
   // SPA fallback for non-API routes: if HTML is requested, return index.html if exists
   app.use((req, res, next) => {
     if (req.method !== 'GET') return next();
-    if (req.path.startsWith('/api') || req.path.startsWith('/d/') || req.path.startsWith('/ws')) {
+    if (req.path.startsWith('/api') || req.path.startsWith('/d/') || req.path.startsWith('/ws') || req.path.startsWith('/sw-stream-download/')) {
       return next();
     }
     const indexPath = path.join(publicDir, 'index.html');

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sharedrop-shell-v1';
+const CACHE_NAME = 'sharedrop-shell-v2';
 const SHELL_ASSETS = [
   '/',
   '/index.html',
@@ -82,7 +82,25 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Active Native Streaming Downloads map (streamId -> { port, filename, size, mimeType })
+const activeDownloadStreams = new Map();
+
 self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'REGISTER_DOWNLOAD_STREAM') {
+    const { streamId, filename, size, mimeType } = event.data;
+    const port = event.ports && event.ports[0];
+    if (port && streamId) {
+      activeDownloadStreams.set(streamId, {
+        port,
+        filename: filename || 'download.bin',
+        size: Number(size) || 0,
+        mimeType: mimeType || 'application/octet-stream',
+        registeredAt: Date.now()
+      });
+    }
+    return;
+  }
+
   if (event.data && event.data.type === 'consume-share-target') {
     event.waitUntil(
       consumeSharedPayload().then((payload) => {
@@ -102,6 +120,53 @@ self.addEventListener('message', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
+
+  // Intercept Native Streaming Downloads directly into user's Downloads folder (Google Drive style)
+  if (url.pathname.startsWith('/sw-stream-download/')) {
+    const parts = url.pathname.split('/');
+    const streamId = parts[2];
+    const rawFilename = parts.slice(3).join('/') || 'download.bin';
+    const decodedFilename = decodeURIComponent(rawFilename);
+    const reg = activeDownloadStreams.get(streamId);
+
+    if (!reg || !reg.port) {
+      event.respondWith(new Response('Stream not registered or expired', { status: 404 }));
+      return;
+    }
+
+    const stream = new ReadableStream({
+      start(controller) {
+        reg.port.onmessage = (msgEvent) => {
+          if (!msgEvent.data) return;
+          if (msgEvent.data.type === 'chunk') {
+            const chunk = new Uint8Array(msgEvent.data.chunk);
+            controller.enqueue(chunk);
+          } else if (msgEvent.data.type === 'end') {
+            try { controller.close(); } catch {}
+            activeDownloadStreams.delete(streamId);
+          } else if (msgEvent.data.type === 'abort') {
+            try { controller.error(new Error('Stream aborted')); } catch {}
+            activeDownloadStreams.delete(streamId);
+          }
+        };
+      },
+      cancel() {
+        activeDownloadStreams.delete(streamId);
+      }
+    });
+
+    const safeFilename = decodedFilename.replace(/["\r\n]/g, '_');
+    const headers = new Headers();
+    headers.set('Content-Type', reg.mimeType || 'application/octet-stream');
+    headers.set('Content-Disposition', `attachment; filename="${safeFilename}"; filename*=UTF-8''${encodeURIComponent(decodedFilename)}`);
+    if (reg.size && reg.size > 0) {
+      headers.set('Content-Length', String(reg.size));
+    }
+    headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+
+    event.respondWith(new Response(stream, { headers }));
+    return;
+  }
 
   // Intercept Web Share Target POST requests
   if (event.request.method === 'POST' && url.searchParams.has('share-target')) {

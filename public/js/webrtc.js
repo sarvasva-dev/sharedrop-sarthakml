@@ -627,6 +627,45 @@ export class TransferManager {
     this._cleanupTransfer(transferId);
   }
 
+  _initServiceWorkerStream(tx, fileIndex) {
+    if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) {
+      return false;
+    }
+
+    try {
+      const meta = (tx.files && tx.files[fileIndex]) || {};
+      const filename = meta.name || `download-${fileIndex}`;
+      const streamId = `${tx.id}-${fileIndex}`;
+      const channel = new MessageChannel();
+
+      navigator.serviceWorker.controller.postMessage({
+        type: 'REGISTER_DOWNLOAD_STREAM',
+        streamId,
+        filename,
+        size: meta.size || 0,
+        mimeType: meta.type || 'application/octet-stream'
+      }, [channel.port1]);
+
+      tx.swPort = channel.port2;
+      tx.swStreamId = streamId;
+
+      // Trigger native download immediately into ~/Downloads via hidden iframe (Google Drive style)
+      const downloadUrl = `/sw-stream-download/${streamId}/${encodeURIComponent(filename)}`;
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = downloadUrl;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        try { iframe.remove(); } catch {}
+      }, 120000);
+
+      return true;
+    } catch (err) {
+      console.warn('[TransferManager] SW streaming download unavailable, falling back to memory blob:', err);
+      return false;
+    }
+  }
+
   _handleDataChannelMessage(peerId, msg) {
     if (!msg || !msg.transferId) return;
     const tx = this.transfers.get(msg.transferId);
@@ -636,6 +675,7 @@ export class TransferManager {
       tx.currentFileIndex = msg.fileIndex;
       tx.receivedChunks = [];
       tx.currentFileBytesReceived = 0;
+      this._initServiceWorkerStream(tx, msg.fileIndex);
     } else if (msg.type === 'file-end') {
       this._finalizeReceivedFile(tx, msg.fileIndex);
     }
@@ -660,7 +700,12 @@ export class TransferManager {
     if (meta.eof) {
       this._finalizeReceivedFile(tx, meta.fileIndex);
     } else {
-      tx.currentFileIndex = meta.fileIndex;
+      if (tx.currentFileIndex !== meta.fileIndex || !tx.swPort) {
+        tx.currentFileIndex = meta.fileIndex;
+        tx.receivedChunks = [];
+        tx.currentFileBytesReceived = 0;
+        this._initServiceWorkerStream(tx, meta.fileIndex);
+      }
     }
   }
 
@@ -675,8 +720,15 @@ export class TransferManager {
     const tx = this.transfers.get(transferId);
     if (!tx || tx.status !== 'transferring') return;
 
-    if (!tx.receivedChunks) tx.receivedChunks = [];
-    tx.receivedChunks.push(chunkData);
+    if (tx.swPort) {
+      // Direct Stream via Service Worker to ~/Downloads (Google Drive style)
+      // Zero RAM accumulation: chunk is enqueued directly to the HTTP response stream!
+      tx.swPort.postMessage({ type: 'chunk', chunk: chunkData }, [chunkData]);
+    } else {
+      if (!tx.receivedChunks) tx.receivedChunks = [];
+      tx.receivedChunks.push(chunkData);
+    }
+
     tx.currentFileBytesReceived += chunkData.byteLength;
     tx.bytesTransferred += chunkData.byteLength;
 
@@ -694,23 +746,30 @@ export class TransferManager {
 
   _finalizeReceivedFile(tx, fileIndex) {
     const meta = (tx.files && tx.files[fileIndex]) || {};
-    const mimeType = meta.type || 'application/octet-stream';
-    const blob = new Blob(tx.receivedChunks || [], { type: mimeType });
 
-    if (!tx.downloadedBlobs) tx.downloadedBlobs = [];
-    tx.downloadedBlobs.push({
-      blob,
-      name: meta.name || `download-${fileIndex}`,
-      size: blob.size,
-      mimeType,
-      webkitRelativePath: meta.webkitRelativePath || ''
-    });
+    if (tx.swPort) {
+      // Notify Service Worker that stream is finished
+      tx.swPort.postMessage({ type: 'end' });
+      tx.swPort = null;
+    } else {
+      const mimeType = meta.type || 'application/octet-stream';
+      const blob = new Blob(tx.receivedChunks || [], { type: mimeType });
 
-    tx.receivedChunks = [];
-    tx.currentFileBytesReceived = 0;
+      if (!tx.downloadedBlobs) tx.downloadedBlobs = [];
+      tx.downloadedBlobs.push({
+        blob,
+        name: meta.name || `download-${fileIndex}`,
+        size: blob.size,
+        mimeType,
+        webkitRelativePath: meta.webkitRelativePath || ''
+      });
 
-    // Trigger auto-download in browser
-    this._triggerBrowserDownload(blob, meta.name || `download-${fileIndex}`);
+      tx.receivedChunks = [];
+      tx.currentFileBytesReceived = 0;
+
+      // Trigger auto-download in browser
+      this._triggerBrowserDownload(blob, meta.name || `download-${fileIndex}`);
+    }
 
     // If last file, mark transfer completed
     if (fileIndex >= tx.files.length - 1 || tx.bytesTransferred >= tx.totalSize) {
@@ -739,9 +798,15 @@ export class TransferManager {
   }
 
   _cleanupTransfer(transferId) {
+    const tx = this.transfers.get(transferId);
+    if (tx && tx.swPort) {
+      try {
+        tx.swPort.postMessage({ type: 'abort' });
+      } catch {}
+      tx.swPort = null;
+    }
     setTimeout(() => {
       // Retain transfer object in history without massive memory blobs
-      const tx = this.transfers.get(transferId);
       if (tx) {
         delete tx.receivedChunks;
         delete tx.downloadedBlobs;
