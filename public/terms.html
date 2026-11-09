@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — ShareDrop (sarthakml.in)</title>
+  <meta name="description" content="Terms of Service for ShareDrop peer-to-peer file sharing platform.">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .legal-page-container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      font-family: var(--font-sans);
+      color: var(--ink-primary);
+      line-height: 1.7;
+    }
+    .legal-nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 40px;
+    }
+    .legal-brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink-primary);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+    .legal-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--ink-primary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .legal-back-btn:hover {
+      border-color: var(--terracotta);
+      color: var(--terracotta);
+      transform: translateY(-1px);
+    }
+    .legal-title {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      color: var(--ink-primary);
+    }
+    .legal-subtitle {
+      font-size: 0.95rem;
+      color: var(--ink-secondary);
+      margin-bottom: 36px;
+    }
+    .legal-section {
+      margin-bottom: 40px;
+    }
+    .legal-section h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      color: var(--ink-primary);
+      border-left: 3px solid var(--terracotta);
+      padding-left: 12px;
+    }
+    .legal-section p, .legal-section li {
+      color: var(--ink-secondary);
+      margin-bottom: 14px;
+      font-size: 1.02rem;
+    }
+    .legal-section ul {
+      padding-left: 24px;
+      margin-bottom: 18px;
+    }
+    .legal-callout {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--teal-p2p);
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .legal-callout p {
+      margin: 0;
+      color: var(--ink-primary);
+      font-size: 0.95rem;
+    }
+    .legal-footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.88rem;
+      color: var(--ink-secondary);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="legal-page-container">
+    <nav class="legal-nav-header">
+      <a href="/" class="legal-brand-link">
+        <svg style="width: 28px; height: 28px; color: var(--terracotta);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v10m0 0l-4-4m4 4l4-4"/>
+          <path d="M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"/>
+        </svg>
+        <span>ShareDrop <span style="font-size: 0.85rem; font-weight: 500; color: var(--terracotta);">sarthakml.in</span></span>
+      </a>
+      <a href="/" class="legal-back-btn">
+        <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Launch ShareDrop
+      </a>
+    </nav>
+
+    <header>
+      <h1 class="legal-title">Terms of Service</h1>
+      <p class="legal-subtitle">Effective Date: November 9, 2026 · Version 1.0 · Last Updated: 2026</p>
+    </header>
+
+    <div class="legal-callout">
+      <p><strong>Summary:</strong> ShareDrop is an open-source, peer-to-peer file and clipboard sharing web utility. You are solely responsible for the content you transmit. We do not inspect, log, or claim ownership over any files transmitted over peer-to-peer WebRTC connections.</p>
+    </div>
+
+    <section class="legal-section">
+      <h2>1. Acceptance of Terms</h2>
+      <p>By accessing or using ShareDrop (accessible at <code>https://sharedrop.sarthakml.in</code> and associated subdomains), you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to these terms, please do not use the service.</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>2. Nature of the Service</h2>
+      <p>ShareDrop operates as a zero-signup, decentralized peer-to-peer communication platform:</p>
+      <ul>
+        <li><strong>Peer-to-Peer Architecture:</strong> In standard operation, files and text streams travel directly from browser to browser using WebRTC DataChannels encrypted via DTLS.</li>
+        <li><strong>Zero Permanent Server Storage:</strong> Our signaling server only facilitates connection handshakes (SDP offers and ICE candidates). We do not operate cloud file lockers or preserve transferred user payloads.</li>
+        <li><strong>Ephemeral Relay Fallback:</strong> Where network firewalls prohibit direct P2P connections, temporary encrypted relay chunks or ephemeral drops may pass through memory with an automatic 15-minute Time-To-Live (TTL).</li>
+      </ul>
+    </section>
+
+    <section class="legal-section">
+      <h2>3. Acceptable Use Policy</h2>
+      <p>You agree to use ShareDrop strictly for lawful purposes. You must NOT use the platform to transmit, distribute, or facilitate the exchange of:</p>
+      <ul>
+        <li>Malicious software, viruses, ransomware, trojans, or automated exploits.</li>
+        <li>Copyright-infringing media, pirated software, or intellectual property without explicit authorization.</li>
+        <li>Child sexual abuse material (CSAM), non-consensual imagery, or any materials that violate international child protection laws (strictly reported to NCMEC and relevant authorities).</li>
+        <li>Content intended to harass, defame, threaten, or incite violence against individuals or protected groups.</li>
+      </ul>
+      <p>Any abuse of pairing codes, signaling floods, or attempts to disrupt service infrastructure will result in immediate IP rate-limiting and socket disconnection.</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>4. Intellectual Property & License</h2>
+      <p>ShareDrop is free and open-source software maintained by <a href="https://sarthakml.in" target="_blank" style="color: var(--terracotta); text-decoration: none; font-weight: 600;">Sarthak Srivastava</a> under the permissive <strong>MIT License</strong>. The source code is publicly accessible on GitHub at <code>github.com/sarvasva-dev/sharedrop-sarthakml</code>.</p>
+      <p>You retain 100% of all intellectual property rights to any files, data, or media you transmit across the platform. ShareDrop asserts zero ownership or licensing rights over your transmitted data.</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>5. Disclaimer of Warranties ("AS IS")</h2>
+      <p>ShareDrop is provided on an "AS IS" and "AS AVAILABLE" basis without warranties of any kind, whether express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, non-infringement, or uninterrupted availability.</p>
+      <p>Network conditions, strict carrier firewalls, browser compatibility, and local bandwidth may affect transfer speeds or connectivity.</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>6. Limitation of Liability</h2>
+      <p>To the maximum extent permitted by applicable law, neither the author (Sarthak Srivastava) nor project contributors shall be held liable for any direct, indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use ShareDrop, including data loss, hardware failure, or unauthorized interception resulting from compromised user devices.</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>7. Contact & Governance</h2>
+      <p>For questions or legal notices regarding these Terms, contact us at:</p>
+      <ul>
+        <li><strong>Email:</strong> <code>security@sarthakml.in</code></li>
+        <li><strong>Developer:</strong> Sarthak Srivastava (<a href="https://sarthakml.in" target="_blank" style="color: var(--terracotta); text-decoration: none;">sarthakml.in</a>)</li>
+        <li><strong>GitHub:</strong> <a href="https://github.com/sarvasva-dev/sharedrop-sarthakml" target="_blank" style="color: var(--terracotta); text-decoration: none;">sarvasva-dev/sharedrop-sarthakml</a></li>
+      </ul>
+    </section>
+
+    <footer class="legal-footer">
+      <span>&copy; 2026 Sarthak Srivastava. Open Source under MIT License.</span>
+      <div style="display: flex; gap: 16px;">
+        <a href="/privacy.html" style="color: var(--ink-secondary); text-decoration: none;">Privacy Policy</a>
+        <a href="/security.html" style="color: var(--ink-secondary); text-decoration: none;">Security Policy</a>
+        <a href="/faq.html" style="color: var(--ink-secondary); text-decoration: none;">FAQ</a>
+        <a href="https://github.com/sarvasva-dev/sharedrop-sarthakml" target="_blank" style="color: var(--terracotta); text-decoration: none; font-weight: 600;">GitHub</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

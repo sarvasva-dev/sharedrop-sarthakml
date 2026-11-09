@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ShareDrop — Local & Remote P2P Beam</title>
+  <meta name="description" content="Cross-platform P2P file, folder, text, and clipboard sharing web application.">
+  <meta name="theme-color" content="#FAF8F5">
+
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/icons/icon.svg">
+
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div id="app-container">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-logo" title="ShareDrop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v10m0 0l-4-4m4 4l4-4"/>
+            <path d="M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"/>
+          </svg>
+        </div>
+        <h1 class="brand-title">
+          ShareDrop
+          <span class="brand-domain">sarthakml.in</span>
+        </h1>
+        <div id="active-room-badge" class="room-badge" style="display: none;">
+          <span id="active-room-label">ROOM: ABCDE</span>
+          <span id="btn-leave-room" class="room-badge-leave" title="Leave room">&times;</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <a href="https://github.com/sarvasva-dev/sharedrop-sarthakml" target="_blank" rel="noopener noreferrer" class="github-header-btn" title="View Source & Star on GitHub">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+          <span class="github-btn-label">GitHub</span>
+          <span class="github-star-pill">&#9733; Star</span>
+        </a>
+
+        <button id="btn-theme-toggle" class="header-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg id="theme-icon-sun" class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg id="theme-icon-moon" class="dock-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <button id="btn-open-settings" class="header-btn" title="Settings" aria-label="Settings">
+          <svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Concentric Radar Stage -->
+    <main class="radar-stage" id="radar-stage">
+      <div class="radar-background">
+        <div class="radar-ring ring-1"></div>
+        <div class="radar-ring ring-2"></div>
+        <div class="radar-ring ring-3"></div>
+        <div class="radar-ring ring-4"></div>
+        <div class="radar-ring ring-5"></div>
+        <div class="radar-sweep"></div>
+      </div>
+
+      <!-- Center Node (You) -->
+      <div class="self-node-container" id="self-node">
+        <div class="self-avatar-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          <div class="pulse-indicator" title="Connected"></div>
+        </div>
+
+        <div class="self-profile-info">
+          <div class="self-name-row" id="btn-edit-display-name" title="Click to rename device">
+            <span class="self-name-text" id="self-display-name">Discovering...</span>
+            <svg class="self-name-edit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+          </div>
+          <span class="self-network-meta" id="self-network-meta">Local Network Peer</span>
+        </div>
+      </div>
+
+      <!-- Orbiting Peers Container -->
+      <div class="peers-stage" id="peers-stage"></div>
+
+      <!-- Helper Empty Hint -->
+      <div class="radar-empty-hint" id="radar-empty-hint">
+        Open ShareDrop on other devices on the same Wi-Fi, or use <b>Pair Device</b> or <b>Public Room</b> to connect across networks.
+      </div>
+
+      <!-- Cryptographic Trust Badge -->
+      <div class="radar-trust-badge">
+        <span class="trust-badge-dot"></span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <span>End-to-End Encrypted &bull; WebRTC DTLS &bull; Zero Data Stored</span>
+      </div>
+    </main>
+
+    <!-- Thumb-Zone Bottom Action Dock -->
+    <nav class="bottom-action-dock" aria-label="Actions">
+      <button class="dock-item-btn" id="dock-btn-pair" title="Pair with 6-digit code">
+        <svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <span class="dock-label">Pair Code</span>
+      </button>
+
+      <button class="dock-item-btn" id="dock-btn-room" title="Join or create public room">
+        <svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span class="dock-label">Room</span>
+      </button>
+
+      <button class="dock-item-btn" id="dock-btn-drop" title="Cloud / CLI Drop">
+        <svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <span class="dock-label">CLI Drop</span>
+      </button>
+
+      <button class="dock-item-btn" id="dock-btn-text" title="Beam Text or Link">
+        <svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+        <span class="dock-label">Beam Text</span>
+      </button>
+
+      <button class="dock-item-btn" id="dock-btn-transfers" title="Transfer Queue" style="position: relative;">
+        <svg class="dock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+        <span class="dock-label">Transfers</span>
+        <span id="transfers-dock-badge" class="dock-badge" style="display: none;">0</span>
+      </button>
+    </nav>
+
+    <!-- Professional Trust & Legal Footer -->
+    <footer class="app-legal-footer">
+      <div class="footer-status-pill">
+        <span class="status-dot-pulse"></span>
+        <span>DTLS Encrypted</span>
+      </div>
+      <div class="footer-links">
+        <a href="/terms.html" class="doc-link" data-doc="terms">Terms</a>
+        <span class="footer-sep">&bull;</span>
+        <a href="/privacy.html" class="doc-link" data-doc="privacy">Privacy</a>
+        <span class="footer-sep">&bull;</span>
+        <a href="/security.html" class="doc-link" data-doc="security">Security</a>
+        <span class="footer-sep">&bull;</span>
+        <a href="/faq.html" class="doc-link" data-doc="faq">FAQ</a>
+        <span class="footer-sep">&bull;</span>
+        <a href="https://github.com/sarvasva-dev/sharedrop-sarthakml" target="_blank" rel="noopener noreferrer" class="footer-github-link">GitHub</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Hidden File Input for Picking Files/Folders -->
+  <input type="file" id="file-picker-input" multiple style="display: none;">
+  <input type="file" id="folder-picker-input" webkitdirectory directory multiple style="display: none;">
+
+  <!-- ======================================================================
+       Modals
+       ====================================================================== -->
+
+  <!-- Device Rename Modal -->
+  <div class="modal-backdrop" id="modal-rename">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">Device Display Name</h2>
+        <button class="modal-close-btn" data-close="modal-rename">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.88rem; color: var(--ink-secondary);">Choose how this device appears to peers on your network:</p>
+        <input type="text" id="rename-input" class="input-field" maxlength="40" placeholder="e.g. Amber Fox's MacBook">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" data-close="modal-rename">Cancel</button>
+        <button class="btn-primary" id="btn-save-rename">Save Name</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6-Digit Pair Code Modal -->
+  <div class="modal-backdrop" id="modal-pair">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">Pair Device with 6-Digit Code</h2>
+        <button class="modal-close-btn" data-close="modal-pair">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 0.85rem; font-weight: 600; color: var(--ink-secondary);">Your Pair Code (tell the other device):</label>
+          <div class="big-code-box">
+            <span class="big-code-text" id="self-pair-code">------</span>
+          </div>
+          <div class="qr-code-wrap" id="pair-qr-wrap" style="display: none;">
+            <img id="pair-qr-img" alt="Scan to pair">
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-subtle); margin: 8px 0;"></div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 0.85rem; font-weight: 600; color: var(--ink-secondary);">Or enter pair code from other device:</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="input-pair-code" class="input-field" maxlength="6" inputmode="numeric" placeholder="123456" style="text-align: center; font-family: var(--font-mono); font-size: 1.2rem; letter-spacing: 0.1em;">
+            <button class="btn-primary btn-teal" id="btn-join-pair-code">Connect</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5-Character Public Room Modal -->
+  <div class="modal-backdrop" id="modal-room">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">Public Multi-Peer Room</h2>
+        <button class="modal-close-btn" data-close="modal-room">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 0.85rem; font-weight: 600; color: var(--ink-secondary);">Join an existing room code:</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="input-room-code" class="input-field" maxlength="8" placeholder="K7M9P" style="text-transform: uppercase; font-family: var(--font-mono); font-size: 1.1rem; text-align: center; letter-spacing: 0.1em;">
+            <button class="btn-primary" id="btn-submit-join-room">Join</button>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-subtle); margin: 8px 0;"></div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <p style="font-size: 0.85rem; color: var(--ink-secondary);">Or generate a fresh 5-character room to share via link or QR:</p>
+          <button class="btn-secondary" id="btn-create-fresh-room">Create New Room</button>
+          <div class="qr-code-wrap" id="room-qr-wrap" style="display: none; margin-top: 8px;">
+            <img id="room-qr-img" alt="Room QR Code">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instant Text Beam Modal -->
+  <div class="modal-backdrop" id="modal-text-beam">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">Beam Text or Link</h2>
+        <button class="modal-close-btn" data-close="modal-text-beam">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--ink-secondary);">Choose target peer:</p>
+        <select id="beam-target-select" class="input-field" style="height: 40px;"></select>
+        <textarea id="beam-text-content" class="input-field" style="height: 120px; padding: 12px; resize: none;" placeholder="Paste URL, code snippet, or message..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" data-close="modal-text-beam">Cancel</button>
+        <button class="btn-primary" id="btn-send-beam-text">Send Beam</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLI / Cloud Drop Modal -->
+  <div class="modal-backdrop" id="modal-drop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">Cloud / CLI Drop</h2>
+        <button class="modal-close-btn" data-close="modal-drop">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 0.85rem; font-weight: 600; color: var(--ink-secondary);">Download by 6-char Drop Code:</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="input-drop-code" class="input-field" maxlength="8" placeholder="X9K2M4" style="text-transform: uppercase; font-family: var(--font-mono); font-size: 1.1rem; text-align: center; letter-spacing: 0.1em;">
+            <button class="btn-primary btn-teal" id="btn-fetch-drop">Download</button>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-subtle); margin: 8px 0;"></div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 0.85rem; font-weight: 600; color: var(--ink-secondary);">Upload files for CLI / Web retrieval:</label>
+          <input type="file" id="cli-drop-file-input" multiple class="input-field" style="padding-top: 6px;">
+          <button class="btn-secondary" id="btn-upload-cli-drop">Upload Drop</button>
+          <div id="drop-result-box" style="display: none; padding: 10px; background: var(--bg-elevated); border-radius: var(--radius-sm); font-size: 0.82rem; font-family: var(--font-mono); word-break: break-all;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Incoming File Offer Modal -->
+  <div class="modal-backdrop" id="modal-incoming-offer">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">Incoming File Transfer</h2>
+      </div>
+      <div class="modal-body">
+        <p id="incoming-offer-peer-text" style="font-size: 0.95rem; font-weight: 600;"></p>
+        <div style="padding: 12px; background: var(--bg-elevated); border-radius: var(--radius-md); font-size: 0.85rem; display: flex; flex-direction: column; gap: 4px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--ink-secondary);">Files:</span>
+            <span id="incoming-offer-files-count" style="font-weight: 600;">1</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--ink-secondary);">Total Size:</span>
+            <span id="incoming-offer-total-size" style="font-weight: 600;">0 KB</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--ink-secondary);">Transport Mode:</span>
+            <span id="incoming-offer-mode" style="font-weight: 600; font-family: var(--font-mono);">WebRTC</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-decline-offer">Decline</button>
+        <button class="btn-primary btn-teal" id="btn-accept-offer">Accept & Download</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Documentation & Legal Modal Viewer -->
+  <div class="modal-backdrop" id="modal-doc-viewer">
+    <div class="modal-dialog modal-dialog-large">
+      <div class="modal-header">
+        <h2 class="modal-title" id="doc-viewer-title">Documentation</h2>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <a id="doc-viewer-external" href="#" target="_blank" rel="noopener noreferrer" class="btn-icon" title="Open in new window">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+          <button class="modal-close-btn" data-close="modal-doc-viewer">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body doc-viewer-body" id="doc-viewer-content">
+        <div class="doc-viewer-loading">Loading document...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-backdrop" id="modal-settings">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">Settings</h2>
+        <button class="modal-close-btn" data-close="modal-settings">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 8px 0;">
+          <span style="font-size: 0.9rem; font-weight: 500;">Auto-accept files from Paired devices</span>
+          <input type="checkbox" id="setting-auto-accept" style="width: 20px; height: 20px; accent-color: var(--accent-terracotta);">
+        </label>
+        <div style="border-top: 1px solid var(--border-subtle); margin: 4px 0;"></div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 0.88rem; font-weight: 500;">Saved Pair Secrets:</span>
+          <button class="btn-secondary" id="btn-clear-pair-secrets" style="color: var(--accent-red);">Forget All Paired Devices</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Peer Action Menu Popover / Modal -->
+  <div class="modal-backdrop" id="modal-peer-actions">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title" id="peer-action-title">Send to Peer</h2>
+        <button class="modal-close-btn" data-close="modal-peer-actions">&times;</button>
+      </div>
+      <div class="modal-body" style="gap: 10px;">
+        <button class="btn-primary" id="btn-action-send-files" style="width: 100%;">Send Files</button>
+        <button class="btn-secondary" id="btn-action-send-folder" style="width: 100%;">Send Folder</button>
+        <button class="btn-secondary" id="btn-action-send-text" style="width: 100%;">Beam Text Message</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transfer Drawer Backdrop & Drawer -->
+  <div class="drawer-backdrop" id="transfer-drawer-backdrop">
+    <aside class="transfer-drawer" id="transfer-drawer">
+      <div class="drawer-header">
+        <h3 class="drawer-title">Transfers & History</h3>
+        <button class="modal-close-btn" id="btn-close-drawer">&times;</button>
+      </div>
+      <div class="drawer-body" id="transfers-container">
+        <p style="color: var(--ink-tertiary); font-size: 0.85rem; text-align: center; margin-top: 40px;">No transfers yet</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- App Main Entry Scripts -->
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "name": "sharedrop-sarthakml",
+  "version": "1.0.0",
+  "description": "Production-grade peer-to-peer file transfer engine with WebRTC DataChannels, dual-transport WebSocket fallback, and headless CLI tooling.",
+  "author": "Sarthak Srivastava <ss8971132@gmail.com> (https://sarthakml.in)",
+  "license": "MIT",
+  "homepage": "https://sharedrop.sarthakml.in",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sarvasva-dev/sharedrop-sarthakml.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sarvasva-dev/sharedrop-sarthakml/issues"
+  },
+  "main": "src/server/index.js",
+  "bin": {
+    "sharedrop": "./bin/sharedrop.js"
+  },
+  "man": "./man/sharedrop.1",
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.1.0"
+  },
+  "scripts": {
+    "start": "node src/server/index.js",
+    "dev": "bun --watch src/server/index.js",
+    "cli": "node bin/sharedrop.js",
+    "test": "bun test",
+    "bench": "node benchmarks/throughput.js"
+  },
+  "keywords": [
+    "webrtc",
+    "datachannel",
+    "peer-to-peer",
+    "file-transfer",
+    "airdrop",
+    "pairdrop",
+    "zero-knowledge",
+    "streaming",
+    "unix-cli"
+  ],
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.3.0",
+    "ip": "^2.0.1",
+    "multer": "^2.5.0",
+    "qrcode": "^1.5.4",
+    "ws": "^8.22.2"
+  }
+}

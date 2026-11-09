@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: sharedrop
+    env: docker
+    dockerfilePath: Dockerfile
+    plan: starter
+    region: oregon
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: HOST
+        value: 0.0.0.0
+      - key: PUBLIC_URL
+        value: https://sharedrop.sarthakml.in
+      - key: MAX_RELAY_BYTES
+        value: 262144000
+      - key: DROP_TTL_MS
+        value: 900000
+      - key: PAIR_CODE_TTL_MS
+        value: 300000

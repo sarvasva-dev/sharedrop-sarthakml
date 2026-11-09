@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Whitepaper & Architecture — ShareDrop (sarthakml.in)</title>
+  <meta name="description" content="Technical Security Whitepaper for ShareDrop. Cryptographic models, WebRTC DTLS-SRTP, Anti-IDOR room validation, and rate limiting.">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .legal-page-container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      font-family: var(--font-sans);
+      color: var(--ink-primary);
+      line-height: 1.7;
+    }
+    .legal-nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 40px;
+    }
+    .legal-brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink-primary);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+    .legal-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--ink-primary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .legal-back-btn:hover {
+      border-color: var(--terracotta);
+      color: var(--terracotta);
+      transform: translateY(-1px);
+    }
+    .legal-title {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      color: var(--ink-primary);
+    }
+    .legal-subtitle {
+      font-size: 0.95rem;
+      color: var(--ink-secondary);
+      margin-bottom: 36px;
+    }
+    .legal-section {
+      margin-bottom: 40px;
+    }
+    .legal-section h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      color: var(--ink-primary);
+      border-left: 3px solid var(--terracotta);
+      padding-left: 12px;
+    }
+    .legal-section h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 20px 0 10px;
+      color: var(--ink-primary);
+    }
+    .legal-section p, .legal-section li {
+      color: var(--ink-secondary);
+      margin-bottom: 14px;
+      font-size: 1.02rem;
+    }
+    .legal-section ul {
+      padding-left: 24px;
+      margin-bottom: 18px;
+    }
+    .security-badge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 28px 0;
+    }
+    .sec-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+    .sec-card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
+    .sec-card h4 {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink-primary);
+    }
+    .sec-card p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--ink-secondary);
+    }
+    pre code {
+      display: block;
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      color: var(--ink-primary);
+      overflow-x: auto;
+    }
+    .legal-footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.88rem;
+      color: var(--ink-secondary);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="legal-page-container">
+    <nav class="legal-nav-header">
+      <a href="/" class="legal-brand-link">
+        <svg style="width: 28px; height: 28px; color: var(--terracotta);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v10m0 0l-4-4m4 4l4-4"/>
+          <path d="M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"/>
+        </svg>
+        <span>ShareDrop <span style="font-size: 0.85rem; font-weight: 500; color: var(--terracotta);">sarthakml.in</span></span>
+      </a>
+      <a href="/" class="legal-back-btn">
+        <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Launch ShareDrop
+      </a>
+    </nav>
+
+    <header>
+      <h1 class="legal-title">Security & Cryptography Whitepaper</h1>
+      <p class="legal-subtitle">Technical Overview of ShareDrop's End-to-End Cryptographic & Anti-IDOR Model</p>
+    </header>
+
+    <div class="security-badge-grid">
+      <div class="sec-card">
+        <div class="sec-card-icon">🔒</div>
+        <h4>WebRTC DTLS-SRTP</h4>
+        <p>Direct peer-to-peer 256-bit AES-GCM encryption with browser-negotiated keys.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-card-icon">🛡️</div>
+        <h4>Anti-IDOR Validation</h4>
+        <p>Server enforces mutual room membership before routing any signal or relay chunk.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-card-icon">⚡</div>
+        <h4>Zero Disk Persistence</h4>
+        <p>Chunked 64KB memory streaming with flow control and zero permanent server storage.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-card-icon">⏱️</div>
+        <h4>15-Minute Auto-Burn TTL</h4>
+        <p>Ephemeral relay drops auto-expire and purge from memory in 15 minutes.</p>
+      </div>
+    </div>
+
+    <section class="legal-section">
+      <h2>1. The WebRTC DTLS Cryptographic Guarantee</h2>
+      <p>ShareDrop utilizes the W3C WebRTC DataChannel standard (<code>RTCDataChannel</code>). Unlike traditional cloud services where files upload to a server and are re-downloaded by the recipient, WebRTC creates a direct, authenticated, and encrypted channel between the two devices:</p>
+      <ul>
+        <li><strong>DTLS Key Exchange:</strong> Browsers negotiate session keys directly using ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange during the ICE connection phase.</li>
+        <li><strong>Payload Encryption:</strong> All file slices, directory trees, and clipboard payloads are encrypted using <strong>AES-GCM (256-bit)</strong> at the network interface before packet transmission.</li>
+        <li><strong>No Server Man-In-The-Middle:</strong> The signaling server only relays the initial SDP handshake containing public cryptographic fingerprints. The server never possesses the private keys required to decrypt DataChannel packets.</li>
+      </ul>
+    </section>
+
+    <section class="legal-section">
+      <h2>2. Anti-IDOR Room Isolation Protocol</h2>
+      <p>In insecure signaling implementations, an attacker knowing another peer's UUID can inject arbitrary signals or spoof file transfer offers (Insecure Direct Object Reference). ShareDrop eliminates this vector entirely:</p>
+      <pre><code>// Anti-IDOR Membership Verification Invariant (RoomManager.js)
+if (!roomManager.arePeersConnected(senderId, targetId)) {
+  return sendJson(ws, {
+    type: 'error',
+    code: 'UNAUTHORIZED_TARGET',
+    message: 'Target peer is not in your discovery room or paired group'
+  });
+}</code></pre>
+      <p>Every incoming signaling message (<code>signal</code>, <code>file-offer</code>, <code>text-beam</code>, <code>ws-chunk</code>) must pass mutual room membership verification before forwarding. Even if an adversary guesses a peer ID, cross-room routing is strictly prohibited.</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>3. 6-Digit Pair Code Cryptography</h2>
+      <p>To connect devices across separate networks (such as 5G mobile and home Wi-Fi):</p>
+      <ul>
+        <li><strong>Ephemeral 6-Digit Code:</strong> Cryptographically random 6-digit numeric string generated via <code>crypto.randomInt(100000, 999999)</code>, valid for only 5 minutes.</li>
+        <li><strong>Rate Limiting:</strong> Pair code verification is protected by per-socket and per-IP rate limits (maximum 5 attempts per minute), rendering brute-force attacks statistically impossible within the 5-minute TTL.</li>
+        <li><strong>Persistent Pair Secret:</strong> Upon successful code exchange, the server mints a 32-byte cryptographically secure random token (<code>pairSecret</code>) shared exclusively between the two devices. In all future visits, devices subscribe to <code>paired:sha256(pairSecret)</code>, enabling permanent mutual recognition across any network without credentials.</li>
+      </ul>
+    </section>
+
+    <section class="legal-section">
+      <h2>4. Memory-Bounded Flow Control</h2>
+      <p>Streaming multi-gigabyte files can quickly exhaust client memory or crash browser tabs if unthrottled. ShareDrop enforces strict streaming backpressure:</p>
+      <pre><code>// Client Backpressure Control (webrtc.js)
+const CHUNK_SIZE = 65536; // 64 KB
+channel.bufferedAmountLowThreshold = 524288; // 512 KB
+
+while (offset < file.size) {
+  if (channel.bufferedAmount > 2 * 1024 * 1024) {
+    await waitForBufferedAmountLow();
+  }
+  channel.send(slice);
+  offset += CHUNK_SIZE;
+}</code></pre>
+      <p>This guarantees smooth memory usage, maximum link throughput, and zero tab crashes across low-memory mobile devices.</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>5. Security Headers & Hardening</h2>
+      <p>All HTTP responses from <code>sharedrop.sarthakml.in</code> carry hardened security headers:</p>
+      <ul>
+        <li><code>Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</code></li>
+        <li><code>X-Content-Type-Options: nosniff</code></li>
+        <li><code>X-Frame-Options: DENY</code> (Prevents clickjacking)</li>
+        <li><code>Referrer-Policy: strict-origin-when-cross-origin</code></li>
+        <li><code>Permissions-Policy: camera=(), microphone=(), geolocation=()</code></li>
+      </ul>
+    </section>
+
+    <section class="legal-section">
+      <h2>6. Responsible Vulnerability Disclosure</h2>
+      <p>If you identify a security issue or architectural vulnerability, please contact:</p>
+      <ul>
+        <li><strong>Security Officer:</strong> Sarthak Srivastava (<a href="https://sarthakml.in" target="_blank" style="color: var(--terracotta); text-decoration: none;">sarthakml.in</a>)</li>
+        <li><strong>Direct Email:</strong> <code>security@sarthakml.in</code> / <code>ss8971132@gmail.com</code></li>
+        <li><strong>SLA:</strong> Vulnerability reports are triaged and acknowledged within 24 to 48 hours.</li>
+      </ul>
+    </section>
+
+    <footer class="legal-footer">
+      <span>&copy; 2026 Sarthak Srivastava. Open Source under MIT License.</span>
+      <div style="display: flex; gap: 16px;">
+        <a href="/terms.html" style="color: var(--ink-secondary); text-decoration: none;">Terms of Service</a>
+        <a href="/privacy.html" style="color: var(--ink-secondary); text-decoration: none;">Privacy Policy</a>
+        <a href="/faq.html" style="color: var(--ink-secondary); text-decoration: none;">FAQ</a>
+        <a href="https://github.com/sarvasva-dev/sharedrop-sarthakml" target="_blank" style="color: var(--terracotta); text-decoration: none; font-weight: 600;">GitHub</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

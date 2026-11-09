@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frequently Asked Questions — ShareDrop (sarthakml.in)</title>
+  <meta name="description" content="Frequently Asked Questions about ShareDrop — P2P WebRTC file transfer, security, AirDrop comparisons, and CLI usage.">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .legal-page-container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      font-family: var(--font-sans);
+      color: var(--ink-primary);
+      line-height: 1.7;
+    }
+    .legal-nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 40px;
+    }
+    .legal-brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink-primary);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+    .legal-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--ink-primary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .legal-back-btn:hover {
+      border-color: var(--terracotta);
+      color: var(--terracotta);
+      transform: translateY(-1px);
+    }
+    .legal-title {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      color: var(--ink-primary);
+    }
+    .legal-subtitle {
+      font-size: 0.95rem;
+      color: var(--ink-secondary);
+      margin-bottom: 36px;
+    }
+    .faq-item {
+      margin-bottom: 32px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .faq-item:hover {
+      border-color: rgba(234, 88, 12, 0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    }
+    .faq-question {
+      font-size: 1.22rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+      color: var(--ink-primary);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .faq-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      background: rgba(234, 88, 12, 0.12);
+      color: var(--terracotta);
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+    .faq-badge.security {
+      background: rgba(13, 148, 136, 0.12);
+      color: var(--teal-p2p);
+    }
+    .faq-answer p {
+      color: var(--ink-secondary);
+      margin-bottom: 12px;
+      font-size: 1.02rem;
+    }
+    .faq-answer p:last-child {
+      margin-bottom: 0;
+    }
+    .faq-answer ul {
+      padding-left: 20px;
+      margin: 12px 0;
+      color: var(--ink-secondary);
+    }
+    .faq-answer code {
+      font-family: var(--font-mono);
+      background: rgba(0, 0, 0, 0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .faq-code-block {
+      background: #18181B;
+      color: #FAF8F5;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+    .legal-footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 0.9rem;
+      color: var(--ink-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="legal-page-container">
+    <header class="legal-nav-header">
+      <a href="/" class="legal-brand-link">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--terracotta);">
+          <path d="M12 2v8"></path>
+          <path d="m4.93 10.93 1.41 1.41"></path>
+          <path d="M2 18h2"></path>
+          <path d="M20 18h2"></path>
+          <path d="m19.07 10.93-1.41 1.41"></path>
+          <path d="M22 22H2"></path>
+          <path d="m16 6-4-4-4 4"></path>
+          <path d="M16 18a4 4 0 0 0-8 0"></path>
+        </svg>
+        <span>ShareDrop</span>
+      </a>
+      <a href="/" class="legal-back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Radar
+      </a>
+    </header>
+
+    <h1 class="legal-title">Frequently Asked Questions</h1>
+    <p class="legal-subtitle">Everything you need to know about peer-to-peer file transfer, encryption, pairing, and the terminal CLI.</p>
+
+    <!-- FAQ 1 -->
+    <div class="faq-item">
+      <div class="faq-question">
+        <span class="faq-badge">Overview</span>
+        <span>What is ShareDrop and how does it work?</span>
+      </div>
+      <div class="faq-answer">
+        <p>ShareDrop is a secure, browser-based, peer-to-peer (P2P) file and text transfer platform inspired by Apple's AirDrop and open-source PairDrop. When you open ShareDrop on two devices connected to the same local Wi-Fi or router, they automatically discover each other via a lightweight WebSocket signaling server.</p>
+        <p>Once you click a peer and select files, the devices negotiate a direct <strong>WebRTC DataChannel</strong>. The file data is streamed straight from device to device across your local network without ever touching our servers or cloud storage.</p>
+      </div>
+    </div>
+
+    <!-- FAQ 2 -->
+    <div class="faq-item">
+      <div class="faq-question">
+        <span class="faq-badge">Compatibility</span>
+        <span>How does ShareDrop differ from Apple AirDrop?</span>
+      </div>
+      <div class="faq-answer">
+        <p>While Apple AirDrop is locked strictly to Apple hardware (iOS and macOS) and relies on proprietary Bluetooth/Wi-Fi Direct protocols, ShareDrop is completely platform-agnostic:</p>
+        <ul>
+          <li><strong>Cross-Platform Freedom:</strong> Works seamlessly across iPhone, Android, Mac, Windows, Linux, Chromebook, and terminal CLIs.</li>
+          <li><strong>Zero App Installation:</strong> Runs instantly inside any modern web browser (Chrome, Brave, Safari, Firefox, Edge).</li>
+          <li><strong>Progressive Web App (PWA):</strong> Can be installed on your home screen or desktop dock for offline readiness and native Web Share Target integration.</li>
+          <li><strong>No Accounts or Phone Numbers:</strong> Zero login, zero phone numbers, and zero tracking cookies required.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FAQ 3 -->
+    <div class="faq-item">
+      <div class="faq-question">
+        <span class="faq-badge security">Security</span>
+        <span>Is my data private? Can anyone inspect the files I send?</span>
+      </div>
+      <div class="faq-answer">
+        <p>Your transfers are cryptographically private. Every WebRTC DataChannel connection enforces mandatory <strong>DTLS (Datagram Transport Layer Security)</strong> encryption with modern cipher suites (AES-128-GCM or AES-256-GCM).</p>
+        <p>Because the transfer is peer-to-peer:</p>
+        <ul>
+          <li>Our servers never touch, view, or buffer your files or text beams.</li>
+          <li>The signaling server only exchanges SDP session parameters and ICE network candidate addresses.</li>
+          <li>Even if our signaling server were compromised, the adversary cannot decrypt the end-to-end DTLS payload.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FAQ 4 -->
+    <div class="faq-item">
+      <div class="faq-question">
+        <span class="faq-badge">Pairing</span>
+        <span>Can I send files to someone on a different network or cellular data?</span>
+      </div>
+      <div class="faq-answer">
+        <p><strong>Yes!</strong> If devices are not on the same local Wi-Fi or behind carrier CGNAT firewalls, ShareDrop provides two simple pairing mechanisms:</p>
+        <ul>
+          <li><strong>6-Digit Persistent Pairing Code:</strong> Click <em>"Pair Devices"</em> in the bottom dock, generate a 6-digit code or scan the QR code. The devices become paired peers indefinitely across any cellular, VPN, or public Wi-Fi network until manually unpaired.</li>
+          <li><strong>Public Room:</strong> Click <em>"Join Room"</em> to create or join a short 5-character temporary room (e.g., <code>DROP1</code>) for spontaneous team transfers.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FAQ 5 -->
+    <div class="faq-item">
+      <div class="faq-question">
+        <span class="faq-badge">Performance</span>
+        <span>Is there a file size limit?</span>
+      </div>
+      <div class="faq-answer">
+        <p>There is <strong>no hard file size limit</strong> for peer-to-peer transfers. Whether you are sending a 2 MB photo or a 50 GB 4K video raw dump, ShareDrop handles it gracefully.</p>
+        <p>Our streaming engine utilizes a 64 KB chunking pipeline paired with backpressure flow control (<code>bufferedAmountLowThreshold: 512 KB</code>). This ensures your browser's RAM memory footprint stays constant and lightweight regardless of file size.</p>
+      </div>
+    </div>
+
+    <!-- FAQ 6 -->
+    <div class="faq-item">
+      <div class="faq-question">
+        <span class="faq-badge">Developer</span>
+        <span>How do I use the ShareDrop Terminal CLI?</span>
+      </div>
+      <div class="faq-answer">
+        <p>ShareDrop ships with a first-class Node.js/Bun CLI for headless servers, developer laptops, and CI/CD pipelines:</p>
+        <div class="faq-code-block"># Send a file directly to paired browser or peer
+npx sharedrop-cli send ./build.tar.gz
+
+# Send an ephemeral HTTP drop with 15-minute TTL
+npx sharedrop-cli send ./backup.sql --ephemeral
+
+# Receive a drop using a 6-digit pair code
+npx sharedrop-cli receive 482910 --out ./downloads/</div>
+        <p>The CLI prints an ASCII QR code directly in your terminal for instant scanning with your mobile phone camera.</p>
+      </div>
+    </div>
+
+    <!-- FAQ 7 -->
+    <div class="faq-item">
+      <div class="faq-question">
+        <span class="faq-badge">Open Source</span>
+        <span>Is ShareDrop open source and can I self-host it?</span>
+      </div>
+      <div class="faq-answer">
+        <p>Yes, 100%! ShareDrop is open source under the permissive <strong>MIT License</strong>. You can inspect the source code, contribute features, or deploy your own private instance inside your company intranet using Docker:</p>
+        <div class="faq-code-block">git clone https://github.com/sarvasva-dev/sharedrop-sarthakml.git
+cd sharedrop-sarthakml
+docker-compose up -d</div>
+        <p>View the full repository, architecture documentation, and deployment guides at <a href="https://github.com/sarvasva-dev/sharedrop-sarthakml" target="_blank" style="color: var(--terracotta); text-decoration: none; font-weight: 600;">github.com/sarvasva-dev/sharedrop-sarthakml</a>.</p>
+      </div>
+    </div>
+
+    <footer class="legal-footer">
+      <span>&copy; 2026 Sarthak Srivastava. Open Source under MIT License.</span>
+      <div style="display: flex; gap: 16px;">
+        <a href="/terms.html" style="color: var(--ink-secondary); text-decoration: none;">Terms of Service</a>
+        <a href="/privacy.html" style="color: var(--ink-secondary); text-decoration: none;">Privacy Policy</a>
+        <a href="/security.html" style="color: var(--ink-secondary); text-decoration: none;">Security Policy</a>
+        <a href="https://github.com/sarvasva-dev/sharedrop-sarthakml" target="_blank" style="color: var(--terracotta); text-decoration: none; font-weight: 600;">GitHub</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

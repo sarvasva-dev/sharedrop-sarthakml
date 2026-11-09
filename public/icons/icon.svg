@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" fill="none">
+  <rect width="512" height="512" rx="116" fill="#FAF8F5"/>
+  <rect x="12" y="12" width="488" height="488" rx="104" stroke="#E6E1DA" stroke-width="6"/>
+  <!-- Outer Radar Ring -->
+  <circle cx="256" cy="256" r="192" stroke="#18181B" stroke-width="10" stroke-opacity="0.14" stroke-dasharray="18 14"/>
+  <!-- Middle Radar Ring -->
+  <circle cx="256" cy="256" r="136" stroke="#EA580C" stroke-width="12" stroke-opacity="0.35"/>
+  <!-- Inner Radar Ring -->
+  <circle cx="256" cy="256" r="80" stroke="#EA580C" stroke-width="14" stroke-opacity="0.72"/>
+  <!-- Signal Sweep Arc -->
+  <path d="M256 64 A192 192 0 0 1 448 256" stroke="#EA580C" stroke-width="14" stroke-linecap="round"/>
+  <path d="M256 120 A136 136 0 0 1 392 256" stroke="#0D9488" stroke-width="12" stroke-linecap="round"/>
+  <!-- Orbiting Peer Node 1 (P2P Teal) -->
+  <circle cx="386" cy="138" r="24" fill="#0D9488" stroke="#FAF8F5" stroke-width="8"/>
+  <!-- Orbiting Peer Node 2 (Deep Ink) -->
+  <circle cx="138" cy="348" r="20" fill="#18181B" stroke="#FAF8F5" stroke-width="6"/>
+  <!-- Central Beacon Node -->
+  <circle cx="256" cy="256" r="38" fill="#EA580C"/>
+  <circle cx="256" cy="256" r="16" fill="#FAF8F5"/>
+</svg>

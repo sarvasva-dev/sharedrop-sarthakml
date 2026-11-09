@@ -1,0 +1,41 @@
+# ==============================================================================
+# ShareDrop (sharedrop.sarthakml.in) — Production Caddy Reverse Proxy
+# Auto-HTTPS (Let's Encrypt / ZeroSSL), WebSocket proxying, security headers,
+# HTTP/2, and HTTP/3 QUIC support.
+# ==============================================================================
+
+sharedrop.sarthakml.in {
+    # Automatic TLS certificate generation & renewal
+    encode gzip zstd
+
+    # Security Headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        -Server
+    }
+
+    # Static assets caching optimization
+    @static {
+        path /css/* /js/* /icons/* /manifest.webmanifest /sw.js
+    }
+    header @static Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
+
+    # Upstream ShareDrop NodeJS / Bun backend
+    reverse_proxy sharedrop:3000 {
+        # WebSocket upgrade headers are passed automatically by Caddy
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+
+        # Generous timeout for large WebRTC binary fallback uploads
+        transport http {
+            read_buffer 65536
+            response_header_timeout 60s
+        }
+    }
+}

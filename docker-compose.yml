@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  sharedrop:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sharedrop:latest
+    container_name: sharedrop-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+      - PUBLIC_URL=https://sharedrop.sarthakml.in
+      - MAX_RELAY_BYTES=262144000 # 250 MB
+      - DROP_TTL_MS=900000        # 15 minutes
+      - PAIR_CODE_TTL_MS=300000   # 5 minutes
+      - UPLOAD_DIR=/tmp/sharedrop-uploads
+    volumes:
+      - sharedrop-data:/tmp/sharedrop-uploads
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - sharedrop-net
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: sharedrop-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3 QUIC
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      sharedrop:
+        condition: service_healthy
+    networks:
+      - sharedrop-net
+
+volumes:
+  sharedrop-data:
+  caddy-data:
+  caddy-config:
+
+networks:
+  sharedrop-net:
+    driver: bridge

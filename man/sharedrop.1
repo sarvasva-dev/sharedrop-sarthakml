@@ -1,0 +1,98 @@
+.TH SHAREDROP 1 "November 2026" "ShareDrop 1.0.0" "User Commands"
+.SH NAME
+sharedrop \- peer-to-peer streaming file, folder, and clipboard beam utility
+.SH SYNOPSIS
+.B sharedrop
+[\fICOMMAND\fR] [\fIOPTIONS\fR] [\fIARGUMENTS\fR...]
+.SH DESCRIPTION
+.B sharedrop
+is a zero-configuration, cross-platform command-line file transfer tool engineered for direct peer-to-peer streaming over WebRTC DataChannels (RFC 8831) with automatic dual-transport WebSocket relay fallback.
+.PP
+Peers sharing the same local area network (LAN) discover each other automatically through ephemeral signaling. Across distinct networks, carrier CGNATs, or firewalls, peers establish direct encrypted communication using 6-digit cryptographic pairing codes or 5-character public rooms.
+.SH COMMANDS
+.TP
+.B send \fIPATH\fR | \fITEXT\fR
+Stream a file, recursive directory tree, or text string to a target peer, room, or generate an ephemeral cloud drop.
+.TP
+.B receive \fICODE\fR | \fIURL\fR
+Download and verify a file drop using a 6-character drop identifier or direct download URL.
+.TP
+.B status
+Query server health, latency, active peers, and public telemetry.
+.SH OPTIONS
+.TP
+.BR \-s ", " \-\-server " \fIURL\fR"
+Target signaling server URL. Defaults to \fBhttps://sharedrop.sarthakml.in\fR or the value of \fBSHAREDROP_SERVER\fR.
+.TP
+.BR \-r ", " \-\-room " \fICODE\fR"
+Join or target an ad-hoc 5-character public room (e.g. \fBK7M9P\fR).
+.TP
+.BR \-n ", " \-\-name " \fINAME\fR"
+Custom peer display identifier for the transfer session.
+.TP
+.BR \-o ", " \-\-out " \fIDIR\fR"
+Destination output directory for incoming downloads. Defaults to the current working directory.
+.TP
+.BR \-e ", " \-\-ephemeral
+Force an ephemeral HTTP fallback drop with a 15-minute Time-To-Live (TTL).
+.TP
+.BR \-j ", " \-\-json
+Emit machine-readable JSON output for automated scripting and CI/CD pipelines.
+.TP
+.BR \-h ", " \-\-help
+Display command synopsis and exit.
+.TP
+.BR \-v ", " \-\-version
+Output version information and exit.
+.SH PROTOCOL & STREAMING
+Transfers utilize a memory-bounded streaming pipeline:
+.IP \(bu 2
+Payloads are sliced into fixed \fB65,536-byte (64 KB)\fR frames.
+.IP \(bu 2
+Backpressure flow control enforces a high watermark of 2 MB and resumes transmission when \fBbufferedAmountLowThreshold\fR drops to \fB512 KB\fR, preventing kernel socket buffer bloat and client heap exhaustion.
+.IP \(bu 2
+Direct P2P connections enforce Datagram Transport Layer Security (\fBDTLS 1.2/1.3\fR) with \fBAES-GCM (256-bit)\fR payload encryption.
+.SH EXAMPLES
+.PP
+Upload a tarball to an ephemeral drop and render an ASCII QR code:
+.RS
+.nf
+$ sharedrop send ./release-v1.0.tar.gz
+.fi
+.RE
+.PP
+Beam a file to a specific public room:
+.RS
+.nf
+$ sharedrop send ./document.pdf --room TEAM1 --name "Sarthak-Terminal"
+.fi
+.RE
+.PP
+Download a file drop by code into a downloads directory:
+.RS
+.nf
+$ sharedrop receive 7HJNYW -o ~/Downloads
+.fi
+.RE
+.PP
+Query production server telemetry:
+.RS
+.nf
+$ sharedrop status --server https://sharedrop.sarthakml.in
+.fi
+.RE
+.SH ENVIRONMENT
+.TP
+.B SHAREDROP_SERVER
+Default signaling server endpoint if not specified via \fB--server\fR.
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+General error (network failure, timeout, invalid code, or unhandled rejection).
+.SH AUTHORS
+Written and maintained by Sarthak Srivastava (\fBhttps://sarthakml.in\fR).
+.SH COPYRIGHT
+Copyright \(co 2026 Sarthak Srivastava. Released under the MIT License.

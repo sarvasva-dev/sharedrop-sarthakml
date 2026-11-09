@@ -1,0 +1,42 @@
+{
+  "name": "ShareDrop — sarthakml.in",
+  "short_name": "ShareDrop",
+  "description": "Instant P2P WebRTC & Ephemeral Relay File, Folder, Clipboard & CLI Sharing across LAN and Cloud.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FAF8F5",
+  "theme_color": "#EA580C",
+  "categories": ["utilities", "productivity", "network"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "share_target": {
+    "action": "/?share-target=1",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "files",
+          "accept": ["*/*"]
+        }
+      ]
+    }
+  }
+}
